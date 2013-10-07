@@ -49,7 +49,7 @@ class Geocoder {
         $json = file_get_contents($url);
         if (! $json) { return null; }
         $data = json_decode($json, true);
-        if (! $json) { return false; }
+        if (! $data) { return false; }
         return $data;
     }
 
