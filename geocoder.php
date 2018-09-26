@@ -11,7 +11,8 @@ Example:
 // Can take streetnames ("Broadway, London"), longer addresses ("High Street, Kensington, London"),
 // postcodes/zipcodes ("SW1A 1AA", "90210") or points of interest ("Buckingham Palace", "Mount Everest").
 
-$results = Geocoder::simpleGeocode("Broadway");
+$apiKey = 'AIzaSFJKEALKvPLVVC3IgIEBFRZnqn1j45_ZKPo'; // This needs to be a valid Google API Key. This is an example.
+$results = Geocoder::simpleGeocode("Broadway", $apiKey);
 foreach ($results as $result) {
     echo $result['address'] . "\n";
     echo $result['longitude'] . "\n";
@@ -25,8 +26,8 @@ class Geocoder {
     // Matches are of the type array('q' => <original search string>, 'address' => <best effort at a street address',
     // 'longitude' => <longitude>, 'latitude' => <latitude>).
     // Return value of null signals an error somewhere along the way.
-    public static function simpleGeocode($addr) {
-        $data = self::geocode($addr);
+    public static function simpleGeocode($addr, $apiKey) {
+        $data = self::geocode($addr, $apiKey);
         if (! ($data && isset($data['status']))) {
             return null;
         }
@@ -43,9 +44,10 @@ class Geocoder {
 
     // Get the Google Maps API JSON output as an assoc. array for the specified address.
     // Return value of null means the data could not be retrieved, false means could not be decoded.
-    public static function geocode($addr) {
+    public static function geocode($addr, $apiKey) {
         $encAddr = rawurlencode($addr);
-        $url = "http://maps.googleapis.com/maps/api/geocode/json?address=$encAddr&sensor=false";
+        $encKey = rawurlencode($apiKey);
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=$encAddr&sensor=false&key=$encKey";
         $json = file_get_contents($url);
         if (! $json) { return null; }
         $data = json_decode($json, true);
